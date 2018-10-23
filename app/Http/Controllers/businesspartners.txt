@@ -1,0 +1,76 @@
+//Business Partners
+    public function businessPartners(){
+        $partners = BusinessPartner::all();
+        return view('poc.sample')->with('partners',$partners);
+    }
+
+    public function partner($id){
+        $locations = SiteEndorsed::all();
+        $sites = BusinessLocation::where('partner_id',$id)->get();
+        $partner = BusinessPartner::find($id);
+        return view('poc.partner')->with(['sites'=>$sites,'partner'=>$partner,'locations'=>$locations]);
+
+        // return print_r($sites);
+    }
+
+    public function saveCompany(request $request){
+		$this->validate($request,[
+			'companyName'=>'required',
+		]);
+		
+		$company = new BusinessPartner;
+		$company->company_name = $request->input('companyName');
+		$company->save();
+		
+		return redirect('/tests')->with('success','Added Successfully!');
+    }
+	
+	public function saveSites(Request $request){
+		$this->validate($request,[
+            'company'=>'required',
+			'siteName'=>'required',
+		]);
+
+        $loc = new BusinessLocation;
+
+        $inputSite = ucwords($request->input('siteName'));
+        $site = SiteEndorsed::where('site_name',$inputSite)->get();
+
+        if(count($site) == 1){
+            $loc->site_id = $site[0]->id;
+            $loc->partner_id = $request->input('company');
+            $loc->save();
+        }else{
+            $site = new SiteEndorsed;
+            $site->site_name = $inputSite;
+            $site->save();
+            $id = DB::getPdo()->lastInsertId();
+            
+            $loc->site_id = $id;
+            $loc->partner_id = $request->input('company');
+            $loc->save();
+        }
+
+        return redirect()->back()->with('success','Sited Added!');
+	}
+
+
+    public function showSites(){
+        $sites = SiteEndorsed::all();
+        $businessPartners = BusinessPartner::all();
+        return view('poc.sites')->with(['sites'=>$sites,'businesspartners'=>$businessPartners]);
+
+    }
+
+    public function saveLocation($id,Request $request){
+        $this->validate($request,[
+            'siteSelected'=>'required',
+        ]);
+
+        $sites = new BusinessLocation;
+        $sites->partner_id = $id;
+        $sites->site_id = $request->input('siteSelected');
+        $sites->save();
+        $redir = "/partner/".$id;
+        return redirect($redir)->with('success','Location Added!');
+    }

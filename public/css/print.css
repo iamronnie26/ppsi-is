@@ -1,0 +1,86 @@
+@media all{
+    #header{
+		visibility:visible!important;
+		font-size:2.5em;
+		
+	}
+
+    body {
+  -webkit-print-color-adjust: exact !important;
+
+  font-family:"Calibri",sans-serif;
+        font-size:13pt;
+
+     -ms-filter: "progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#fffada', endColorstr='#fffada')"; /* IE8 */
+    }
+
+    .hidden{
+       display:none;
+    }
+    
+
+    button{
+	display:none;
+}
+    
+    table{
+        position:relative;
+        top:-40px!important;
+        border:1px solid #333;
+        width:100%;
+        border-collapse:collapse;
+        text-align:center;
+    }
+
+    th{
+        background-color:#eee;
+        padding:10px;
+        border:1px solid #333;
+    }
+
+    tr td{
+        padding:10px;
+        border:1px solid #333;
+    }
+    
+    #cards{
+        box-sizing:border-box;
+        position:absolute;
+        top:15%;
+        left:72%;
+        width:28%;
+
+    }
+
+    .card{
+        border:1px solid black;
+        padding:30px;
+    }
+
+    .btn{
+      display:none;
+    }
+
+    .card-title{
+      font-size:24pt;
+      position:relative;
+    }
+
+    #table-title-applicants{
+      position:relative;
+      top:10%;
+      font-size:15pt;
+    }
+    
+    .intern,.applicant{
+        position:relative;
+        top:20px;
+    }
+
+
+    footer{
+      display:block;
+      position:fixed;
+      bottom:0;
+    }
+}

@@ -1,0 +1,1 @@
+<div class="footer"><strong><font color="white">Copyright &copy; 2018 | Pierre and Paul Solutions Inc.</font></strong></div>

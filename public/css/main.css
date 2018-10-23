@@ -1,0 +1,308 @@
+body{
+	overflow-y:hidden;
+}
+
+.sidepanel{
+	overflow-y:auto;
+	overflow-x:hidden;
+	height: 100vh;
+	margin:0px -5px;
+	background-color:#f0f0f0;
+	box-shadow:0px 5px 10px rgba(0,0,0,0.5);
+}
+
+.mainpanel .maincard{
+	box-sizing:border-box;
+	z-index:5;
+}
+
+nav{
+	z-index:10;
+	position
+}
+
+.app .mainpanel{
+	height:90.5vh;
+	overflow-y:auto;
+}
+
+.app{
+	margin-bottom:-10px !important;
+}
+
+.mainpanel .row{
+	margin-bottom:-20px;
+}
+
+.sidepanel ul{
+	list-style-type:none;
+	margin:0px -12px;
+}
+
+.sidepanel li{
+	padding:15px;
+	cursor:pointer;
+	position:relative;
+	border-bottom:2px solid #ddd;;
+}
+
+.sidepanel li a{
+	text-align:center;
+	text-decoration:none;
+	display:block;
+	color:#333;
+	font-size:13pt;
+	font-weight:bold;
+}
+
+.sidepanel li:hover{
+	background-color:#3299bb45;
+	transition:background-color 0.3s ease;	
+}
+
+hr{
+	border:none;
+	border-top:1px solid #bbb;
+	margin-bottom:0;	
+}
+
+.sidepanel li:hover a{
+	transform:scale(1.1);
+	transition:transform 0.2s ease-out;
+}
+
+.sidepanel .name:hover{
+	background-color:#3299BB;
+	color:white;
+}
+
+.profile-pic{
+	border-bottom:1px solid #ddd;
+	position:relative;
+	padding:10px;
+	margin:0px -15px;
+	height:20%;
+	background-color:#fff;
+}
+
+.profile-pic a{
+	position:absolute;
+	right:15px;
+	top:15px;
+	font-size:12pt;
+}
+
+.profile-pic a:hover{
+	text-decoration:underline;
+}
+.navigation{
+	background-color:#293A42;
+	box-shadow:0px 0px 10px rgba(0,0,0,0.5);
+	z-index: 11;
+}
+
+.brand-logo{
+	margin-left:10px;
+	font-size:11pt ! important;
+}
+
+.applicant-pic{
+	background-color:white;
+	height:200px;
+	width:200px;
+	right:0;
+	border:1px solid black;
+}
+
+
+.sidepanel li .material-icons{
+	position:absolute;
+	left:40px;
+	top:50%;
+	transform:translateY(-50%);
+}
+
+.sidepanel .active{
+	background-color:#3299bb;
+	color:white !important;
+}
+
+.sidepanel .active a{
+	color:white!important;
+}
+
+.sidepanel .active:hover{
+	transition:unset;
+	background-color:#3299bb !important;
+	color:white !important;
+}
+
+.card-title{
+	font-weight:400 !important;
+}
+
+.card{
+	border:1px solid #ccc;
+}
+
+.table-container{
+	overflow-x:scroll;
+	margin-bottom:30px;
+}
+
+.table-container td{
+	white-space:nowrap;
+}
+#poc td,#recept td{
+	white-space:nowrap;
+}
+
+#username{
+	cursor:pointer;
+	position:absolute;
+	left:130px;
+	top:35%;
+	font-size:15pt;
+}
+
+.right-panel{
+	height:50vh;
+}
+
+#controls span{
+	position:relative;
+	top:-5px;
+}
+
+#controls .btn{
+	width:100px;
+	padding:0px 5px!important;
+}
+
+#position{
+	position:absolute;
+	top:60%;
+	left:130px;
+	font-style:italic;
+}
+
+#logout{
+	display:none;
+	position:absolute;
+	top:90px;
+	right:0px;
+	background-color:white;
+	padding:15px 20px;
+	text-align:center;
+	box-shadow:0px 0px 3px #333;
+	width:100%;
+}
+
+.main{
+	height:100vh;
+}
+
+.footer{
+	background-color:#3299bb;
+	height:50px;
+	width:100%;
+	margin:0px -15px;
+	text-align:center;
+	line-height:50px;
+	font-size:11pt;
+	color:white;
+}
+
+.loader{
+		display:none;
+		position:absolute;
+		z-index:10;
+		border:10px solid #eee;
+		border-top:10px solid #3498db;
+		border-radius:50%;
+		width:100px;
+		height:100px;
+		animation: spin 0.9s linear infinite;
+	}
+
+	@keyframes spin{
+		0%{
+			transform:rotate(0deg);
+		}
+		100%{
+			transform:rotate(360deg);
+		}
+	}
+
+/*Breakpoints*/
+@media only screen and (max-width: 600px) {
+	#menu{
+		display:block;
+		position:absolute;
+		right:10px;
+		top:50%;
+		transform:translateY(-50%);
+	}
+
+	#sidenav{
+		display:none;
+	}
+
+		.loader{
+		left:40%;
+		top:50%;
+		transform:translate(-50%,-50%);
+	}
+}
+
+@media (min-width: 600px) {
+	#menu{
+		display:block;
+	}
+
+	#sidenav{
+		display:none;
+	}
+
+	.loader{
+		left:40%;
+		top:50%;
+		transform:translate(-50%,-50%);
+	}
+}
+
+@media (min-width: 992px) {
+	#menu{
+		display:none;
+	}
+
+	#sidenav{
+		display:block !important;
+	}
+
+		.loader{
+		left:60%;
+		top:50%;
+		transform:translate(-50%,-50%);
+	}
+}
+
+@media (min-width: 1200px) {
+	#menu{
+		display:none;
+	}
+
+	#sidenav{
+		display:block! important;
+	}
+
+	.loader{
+		left:60%;
+		top:50%;
+		transform:translate(-50%,-50%);
+	}
+}
+
+thead input {
+        width: 100%;
+    }
