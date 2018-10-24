@@ -170,14 +170,20 @@
                         <th>Status</th>
                     </tr>
                    @forelse($showup->endorsements as $endorsement)
+				   @if($endorsement->company_id != 0 && $endorsement->site_id != 0)
                     <tr>
                         <td>{{$endorsement->businesspartner->company_name}}</td>
-                        <td>{{$endorsement->businesspartner->company_name}}</td>
-                        <td>{{$endorsement->businesspartner->company_name}}</td>
+                        <td>{{$endorsement->site->site_name}}</td>
+                        <td>{{$endorsement->status}}</td>
                     </tr>
+					@else
+					<tr>
+                            <td colspan="3" class="center">No Previous Endorsements</td>
+                        </tr>
+					@endif
                    @empty
                         <tr>
-                            <td colspan="3">No Previous Endorsements</td>
+                            <td colspan="3" class="center">No Previous Endorsements</td>
                         </tr>
                     @endforelse
                 </table>
@@ -195,22 +201,20 @@
             </div>
 
 			<div class="input-field col s4">
-				<select class="custom-select" id="business_partner" name="business_partner" disabled>
-					<option  selected hidden>Choose Business Partner</option>
+				<select class="browser-default" id="business_partner" disabled name="business_partner">
+					<option  selected>Choose Business Partner</option>
 					@foreach($businessPartners as $partner)
 					<option value="{{$partner->id}}">{{$partner->company_name}}</option>
 					@endforeach
 				</select>
-				<label for="business_partner">Business Partner</label>
 			</div>
 			<div class="input-field col s4">
-				<select class="custom-select" id="site_endorsed" name="site_endorsed" disabled>
+				<select class="browser-default" id="site_endorsed" name="site_endorsed" disabled>
 					<option  selected hidden>Choose Site</option>
 					@foreach($sites as $site)
 					<option value="{{$site->id}}">{{$site->site_name}}</option>
 					@endforeach
 				</select>
-				<label for="site_endorsed">Site</label>
 			</div>
 
 
@@ -224,7 +228,6 @@
 						document.getElementById("site_endorsed").disabled = true;
 					}
                     if(ddendorsement_status=='Single'){
-                        alert(ddendorsement_status);
 						document.getElementById("business_partner").disabled = false;
 						document.getElementById("site_endorsed").disabled = false;
 					}
@@ -412,7 +415,7 @@ $(function(){
 		$("select[name=business_partner]").val(business_partner);
 	}
 
-	if(site != "null"){
+	if(site != 0){
 		$("select[name=site_endorsed]").val(site);
 	}
 

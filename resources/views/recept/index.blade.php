@@ -10,7 +10,6 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css"/>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.2.7/css/select.dataTables.min.css"/>
 
-
 <div class="row" id="mainContent">
 	<div class="col s12">
 		<div class="col s12 m12 l12">
