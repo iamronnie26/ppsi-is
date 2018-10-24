@@ -444,9 +444,17 @@
 								<tr>
 									<th>Company Name</th>
 									<th>Site</th>
-									<th>Status</th>
+									<th>Endorsement Status</th>
 								</tr>
-								@foreach($showup)
+								@foreach($showup->endorsements as $endorsement)
+								@if($endorsement->company_id != 0)
+									<tr>
+										<td>{{$endorsement->businesspartner->company_name}}</td>
+										<td>{{$endorsement->site->site_name}}</td>
+										<td>{{$endorsement->endorsement_status}}</td>
+									</tr>
+								@endif
+								@endforeach
 							</table>
 						</div>
 					</div>
@@ -456,7 +464,7 @@
 						<!-- Label -->
 						<div class="input-field col s12">
 							<div class="col s3">
-								Business Partner:
+								Recent Business Partner Endorsed:
 							</div>
 							<!-- Content -->
 							<div class="col s9">
@@ -475,7 +483,7 @@
 						<!-- Label -->
 						<div class="input-field col s12">
 							<div class="col s3">
-								Site Endorsed:
+								Recent Site Endorsed:
 							</div>
 							<!-- Content -->
 							<div class="col s9">
@@ -736,20 +744,20 @@
 										let ddField = "<select name='endorsement_status' class='converted_input endorsement_status browser-default' name='ddendorsement_status' id='ddendorsement_status' onchange='return myFunction(this.value);'>"+
 										@if($showup->endorsement_status == '')
 										"<option value='null' selected hidden>---- Select Endorsement Status ----</option>"+
-										"<option value='Single Endorsement'>Single Endorsement</option>"+
-										"<option value='Multiple Endorsement'>Multiple Endorsement</option>"+
+										"<option value='Single'>Single Endorsement</option>"+
+										"<option value='Multiple'>Multiple Endorsement</option>"+
 										@elseif($showup->endorsement_status == 'Single Endorsement')
 										"<option value='null' selected hidden>---- Select Endorsement Status ----</option>"+
-										"<option value='Single Endorsement'>Single Endorsement</option>"+
-										"<option value='Multiple Endorsement'>Multiple Endorsement</option>"+
+										"<option value='Single'>Single Endorsement</option>"+
+										"<option value='Multiple'>Multiple Endorsement</option>"+
 										@elseif($showup->endorsement_status == 'Multiple Endorsement')
 										"<option value='null' selected>---- Select Endorsement Status ----</option>"+
-										"<option value='Single Endorsement'>Single Endorsement</option>"+
-										"<option value='Multiple Endorsement'>Multiple Endorsement</option>"+
+										"<option value='Single'>Single Endorsement</option>"+
+										"<option value='Multiple'>Multiple Endorsement</option>"+
 										@else
 										"<option value='null' selected hidden>---- Select Endorsement Status ----</option>"+
-										"<option value='Single Endorsement'>Single Endorsement</option>"+
-										"<option value='Multiple Endorsement'>Multiple Endorsement</option>"+
+										"<option value='Single'>Single Endorsement</option>"+
+										"<option value='Multiple'>Multiple Endorsement</option>"+
 										@endif
 										"</select>";
 
@@ -1027,46 +1035,65 @@
 	
    
 		 <div class="input-field col s12 m4 ">
-			<select class="icons" name='endorsement_businessPartner_1'>
+		 <div class="row">
+			<select class="icons" form="showupForm" name='endorsement_1'>
 			<option value="" disabled selected>Choose Business Partner</option>
+				@foreach($businessPartners as $businessPartner)
+					"<option value='{{$businessPartner->id}}'>{{$businessPartner->company_name}}</option>"+
+				@endforeach
 						
 			</select>
 			<label>Endorsement 1</label>
+			</div>
 		</div> 
 
 		<div class="input-field col s12 m4 ">
-			<select class="icons" name='endorsement_businessPartner_2'>
+			<select class="icons" form="showupForm" name='endorsement_2'>
 			<option value="" disabled selected>Choose Business Partner</option>
-			
+				@foreach($businessPartners as $businessPartner)
+					"<option value='{{$businessPartner->id}}'>{{$businessPartner->company_name}}</option>"+
+				@endforeach
 			</select>
 			<label>Endorsement 2</label>
 		</div> 
 
 		<div class="input-field col s12 m4 ">
-			<select class="icons" name='endorsement_businessPartner_3'>
+			<select class="icons" form="showupForm" name='endorsement_3'>
 			<option value="" disabled selected>Choose Business Partner</option>
-			
+				@foreach($businessPartners as $businessPartner)
+					"<option value='{{$businessPartner->id}}'>{{$businessPartner->company_name}}</option>"+
+				@endforeach
 			</select>
 			<label>Endorsement 3</label>
 		</div> 
 
 			 <div class="input-field col s12 m4 ">
-			<select class="icons" name='endorsement_site_1'>
+			<select class="icons" form="showupForm" name='endorsement_site_1'>
 			<option value="" disabled selected>Choose Site Location</option>
+			@foreach($sites as $site)
+				<option value='{{$site->id}}'>{{$site->site_name}}</option>
+			@endforeach
+										
 			
 			</select>
 		</div> 
 
 		<div class="input-field col s12 m4 ">
-			<select class="icons" name='endorsement_site_2'>
+			<select class="icons" form="showupForm" name='endorsement_site_2'>
 			<option value="" disabled selected>Choose Site Location</option>
+			@foreach($sites as $site)
+				<option value='{{$site->id}}'>{{$site->site_name}}</option>
+			@endforeach
 			
 			</select>
 		</div> 
 
 		<div class="input-field col s12 m4 ">
-			<select class="icons" name='endorsement_site_3'>
+			<select class="icons" form="showupForm" name='endorsement_site_3'>
 			<option value="" disabled selected>Choose Site Location</option>
+			@foreach($sites as $site)
+				<option value='{{$site->id}}'>{{$site->site_name}}</option>
+			@endforeach
 			
 			</select>
 		</div> 
@@ -1081,10 +1108,14 @@
 	
 </div>
 
-				<script>		
-				function myFunction(ddendorsement_status) {
+				
+				</div>
+			</div>
 
-					if(ddendorsement_status=='Multiple Endorsement'){
+<script>		
+				function myFunction(ddendorsement_status) {
+						alert('pasok');
+					if(ddendorsement_status=='Multiple'){
 
 						$("#deleteModal").modal();
 						$("#deleteModal").modal("open");
@@ -1097,9 +1128,5 @@
 					
 				}
 				</script>
-				</div>
-			</div>
-
-
 
 			@endsection

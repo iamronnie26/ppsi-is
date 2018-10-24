@@ -12,6 +12,7 @@ use App\InterviewInfo;
 use App\BusinessPartners;
 use App\BusinessLocation;
 use App\SiteEndorsed;
+use App\Endorsement;
 use App\School;
 //use App\NewApplicant;
 use Session;
@@ -123,7 +124,7 @@ class POCsController extends Controller
         $showup = Applicant::find($id);
         $interview = Interview::where('applicant_no',$id)->first();
         $sites = SiteEndorsed::all();
-        return view('poc.details')->with([
+        return view('poc.edit')->with([
             'showup'=>$showup,
             'interview'=>$interview,
             'schools'=>$this->schools,
@@ -176,9 +177,9 @@ class POCsController extends Controller
             'school_name'=>$request->input('school'),
             "school_address"=>$request->input('school_address')
         ])->id;
-        $interview = Interview::where("applicant_no",$id)
-                                ->where("status","Processing")
-                                ->first();
+        // $interview = Interview::where("applicant_no",$id)
+        //                         ->where("status","Processing")
+        //                         ->first();
         $applicant->birthdate = $request->input('birthday');
         $applicant->email = $request->input('email');
         $applicant->contact_no = $request->input('contact_no');
@@ -187,7 +188,6 @@ class POCsController extends Controller
         $applicant->gender = $request->input('gender');
         $applicant->marital_status = $request->input('marital_status');
         $applicant->position_applying = $request->input('position_applying');
-        $applicant->work_status = $request->input('work_status');
         $applicant->educational_attainment = $request->input('educational_attainment');
         $applicant->course = $request->input('course');
         $applicant->year_graduated = $request->input('year_graduated');
@@ -196,13 +196,78 @@ class POCsController extends Controller
         $applicant->activity = $request->input("activity");
         $applicant->contact_experience = $request->input("contact_experience");
         $applicant->endorsement_status = $request->input("endorsement_status");
-        $applicant->site_endorsed = $request->input("site_endorsed");
-        $applicant->business_partner = $request->input("business_partner");
+        
         $applicant->comment = $request->input("comment");
         $applicant->remarks = $request->input("remarks");
         $applicant->interviewStatus = $request->input("status");
         $applicant->endorsement_status = $request->input("endorsement_status");
         $applicant->endorse = $request->input("endorse");
+        
+        //Select the endorsement if it exists
+        $endorsement = $applicant->endorsements->first();
+
+        if($request->input('endorsement_status') == "Single"){
+            $endorsement->company_id = $request->input('business_partner');
+            $endorsement->site_id = $request->input('site_endorsed');
+            $applicant->business_partner = $request->input('business_partner');
+            $applicant->site_endorsed = $request->input('site_endorsed');
+            $endorsement->save();
+        }else{
+
+            //Variable where to store the endorsement ID if it exists
+            $endorsement_id = null;
+    
+            //Endorsement Values
+            $endorsement_1 = ['company_id'=>$request->input('endorsement_1'),
+                                'site_id'=>$request->input('endorsement_site_1')
+                ];
+    
+            $endorsement_2 = ['company_id'=>$request->input('endorsement_2'),
+                            'site_id'=>$request->input('endorsement_site_2')
+            ];
+    
+            $endorsement_3 = ['company_id'=>$request->input('endorsement_3'),
+                            'site_id'=>$request->input('endorsement_site_3')
+            ];
+    
+            //Update endorsement if single endorsement
+            if($request->input('endorsement_1') && $request->input('endorsement_site_1')){
+                $endorsement->company_id = $endorsement_1['company_id'];
+                $endorsement->site_id = $endorsement_1['site_id'];
+                $endorsement->contact_id = $applicant->contact_id;
+                $applicant->business_partner = $endorsement_1['company_id'];
+                $applicant->site_endorsed = $endorsement_1['site_id'];
+                $endorsement->save();
+            }
+    
+            //If multiple endorsements, create new endorsement and get the ID
+            if($request->input('endorsement_2')  && $request->input('endorsement_site_2')){
+                    $endorsement = new Endorsement();
+                    $endorsement->company_id = $endorsement_2['company_id'];
+                    $endorsement->site_id = $endorsement_2['site_id'];
+                    $endorsement->contact_id = $applicant->contact_id;
+                    $endorsement->status = "Endorse";
+                    $endorsement->applicant_id = $id;
+                    $endorsement->save();
+    
+                $applicant->business_partner = $endorsement_2['company_id'];
+                $applicant->site_endorsed = $endorsement_2['site_id'];
+    
+            }
+    
+            if($request->input('endorsement_3')  && $request->input('endorsement_site_3')){
+                    $endorsement = new Endorsement();
+                    $endorsement->company_id = $endorsement_3['company_id'];
+                    $endorsement->site_id = $endorsement_3['site_id'];
+                    $endorsement->status = "Endorse";
+                    $endorsement->applicant_id = $id;
+                    $endorsement->contact_id = $applicant->contact_id;
+                    $endorsement->save();
+                $applicant->business_partner = $endorsement_3['company_id'];
+                $applicant->site_endorsed = $endorsement_3['site_id'];
+            }
+        }
+
         // $interview->status = "Done";
         // $interview->save();
         $applicant->save();

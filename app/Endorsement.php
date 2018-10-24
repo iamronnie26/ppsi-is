@@ -21,7 +21,7 @@ class Endorsement extends Model
     }
 
     public function site(){
-        return $this->hasOne('App\Site','id','site_id');
+        return $this->hasOne('App\SiteEndorsed','id','site_id');
     }
 
 }
