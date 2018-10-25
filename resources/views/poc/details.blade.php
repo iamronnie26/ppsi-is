@@ -438,18 +438,6 @@
 					</div>
 					<!-- input field end -->
 
-					<div class="row">
-						<div class="col s12">
-							<table>
-								<tr>
-									<th>Company Name</th>
-									<th>Site</th>
-									<th>Status</th>
-								</tr>
-								@foreach($showup)
-							</table>
-						</div>
-					</div>
 
 					<!-- Input field Start -->
 					<div class="row">

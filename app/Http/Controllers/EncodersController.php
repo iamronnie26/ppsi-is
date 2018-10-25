@@ -95,29 +95,31 @@ class EncodersController extends Controller
     public function update(Request $request, $id)
     {  
         $this->validate($request,[
-            'firstname'=>'required',
-            'middlename'=>'required',
-            'lastname'=>'required',
-            'address'=>'required',
-            'email'=>'required|email',
-            'contact_no'=>'required',
-            'birthdate'=>"required",
-            "nationality"=>"required",
-            "position_applying"=>"required",
-            "contact_experience"=>"required",
-            "last_year_attended"=>"required",
-            "course"=>"required",
-            "gender"=>"required",
-            "activity"=>"required",
-            "marital_status"=>"required",
-            "business_partner"=>"required",
-            "site_endorsed"=>"required",
-            "endorse"=>"required",
-            "school_name"=>"required",
-            "school_address"=>"required"
+            'firstname'=>'string',
+            'middlename'=>'string',
+            'lastname'=>'string',
+            'address'=>'string',
+            'email'=>'string|email',
+            'contact_no'=>'string',
+            'birthdate'=>"string",
+            "nationality"=>"string",
+            "position_applying"=>"string",
+            "contact_experience"=>"string",
+            "last_year_attended"=>"string",
+            "course"=>"string",
+            "gender"=>"string",
+            "activity"=>"string",
+            "marital_status"=>"string",
+            "business_partner"=>"string",
+            "site_endorsed"=>"string",
+            "endorse"=>"string",
+            "school_name"=>"string",
+            "school_address"=>"string",
+            "work_status"=>"string"
         ]);
 
         $applicant = Applicant::find($id);
+        $applicant->work_status = $request->input('work_status');
         $applicant->firstname = $request->input('firstname');
         $applicant->middlename = $request->input('middlename');
         $applicant->lastname = $request->input('lastname');

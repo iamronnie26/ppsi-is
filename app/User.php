@@ -53,6 +53,6 @@ class User extends \Eloquent implements Authenticatable
     }
 
     public function interviews(){
-        return $this->hasMany('App\InterviewInfo','interviewer_id','id');
+        return $this->hasMany('App\Interview','interviewer_id','id');
     }
 }

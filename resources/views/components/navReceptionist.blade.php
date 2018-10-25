@@ -41,7 +41,7 @@
 	</div>
 	<ul>
 		<li id="applicant-nav"><i class="small material-icons">person_add</i><a href="{{ route('recept.index') }}">Applicant Page</a></li>
-		<li id="user-nav"><i class="small material-icons">person_add</i><a href="{{ route('intern.index') }}">Intern Page</a></li>
-		<li id="designation-nav"><i class="small material-icons">dashboard</i><a href="{{ route('recept.summary') }}">Summary Page</a></li>
+		<li id="intern-nav"><i class="small material-icons">person_add</i><a href="{{ route('intern.index') }}">Intern Page</a></li>
+		<li id="summary-nav"><i class="small material-icons">dashboard</i><a href="{{ route('recept.summary') }}">Summary Page</a></li>
 	</ul>
 </div>

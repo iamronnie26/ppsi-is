@@ -12,6 +12,7 @@ use App\InterviewInfo;
 use App\BusinessPartners;
 use App\BusinessLocation;
 use App\SiteEndorsed;
+use App\Endorsement;
 use App\School;
 //use App\NewApplicant;
 use Session;
@@ -44,36 +45,55 @@ class POCsController extends Controller
     {
         $url = route("poc.index.today");
         $id =  Auth::user()->contact_id;
-        $todaysShowups = count(Applicant::whereRaw("created like '".date("Y-m-d")." %'")
-                            ->where('work_status', 'Job')
+        $todaysShowups = Applicant::whereRaw("created like '".date("Y-m-d")." %'")
+                            ->where('contact_id',$id)
+                            ->get()->count();
+
+        $training = count(Applicant::whereRaw("created like'".date("Y-m-d")." %'")
+                            ->where('work_status','TRAINING')
                             ->where('contact_id',$id)
                             ->get());
-        $pendingShowups = count(Interview::where('status','Pending')
-                            ->where('interviewer_id',$id)
+
+        $endorsed = count(Applicant::where('endorsement_status','SINGLE')
+                            ->orWhere('endorsement_status','MULTIPLE')
+                            ->where('contact_id',$id)
+                            ->whereRaw("created like'".date("Y-m-d")." %'")
                             ->get());
-        $processingShowups = count(Interview::where('status','Processing')
-                                ->where('interviewer_id',$id)
-                                ->get());
+
         $totalInterviews = ContactPerson::find($id);
 
         $processing = ContactPerson::find($id);
         if(!is_null($totalInterviews)){
-            $totalInterviews = count($totalInterviews->interviews()->where('status','<>','Transferred')->get());
+            $totalInterviews = $totalInterviews->interviews()
+                                    ->where('status','<>','Transferred')
+                                    ->whereRaw("created like '".date("Y-m-d")." %'")
+                                    ->get()
+                                    ->count();
         }else{
             $totalInterviews = 0;
         }
+
         if(!is_null($processing)){
-            $processing = count($processing->interviews()->where('status','Processing')->get());
+            $processing = count($processing->interviews()->whereRaw("created like '".date("Y-m-d")." %'")->where('status','Processing')->get());
         }else{
             $processing = 0;
         }
+
+        $doneInterviews = ContactPerson::find($id);
+        if(!is_null($doneInterviews)){
+            $done = count($doneInterviews->interviews()->whereRaw("created like '".date("Y-m-d")." %'")->where('status','Done')->get());
+        }else{
+            $done = 0;
+        }
+
         return view('poc.index')->with([
             "url"=>$url,
             "todaysShowups"=>$todaysShowups,
-            "pending"=>$pendingShowups,
-            "processing"=>$processingShowups,
-            "totalInterviews"=>$totalInterviews,
+            "training"=>$training,
             "processingInterviews"=>$processing,
+            "totalInterviews"=>$totalInterviews,
+            "endorsed"=>$endorsed,
+            "doneInterviews"=>$done,
         ]);
     }
     //All Showups
@@ -84,31 +104,49 @@ class POCsController extends Controller
         $todaysShowups = count(Applicant::whereRaw("created like'".date("Y-m-d")." %'")
                             ->where('contact_id',$id)
                             ->get());
-        $pendingShowups = count(Interview::where('status','Pending')
-                            ->where('interviewer_id',$id)
+        $training = count(Applicant::whereRaw("created like'".date("Y-m-d")." %'")
+                            ->where('work_status','TRAINING')
+                            ->where('contact_id',$id)
                             ->get());
-        $processingShowups = count(Interview::where('status','Processing')
-                            ->where('interviewer_id',$id)
-                            ->get());
+
+        $endorsed = Applicant::where('endorsement_status','SINGLE')
+                            ->orWhere('endorsement_status','MULTIPLE')
+                            ->where('contact_id',$id)
+                            ->whereRaw("created like'".date("Y-m-d")." %'")
+                            ->get()->count();
+                            
+                            $processing = ContactPerson::find($id);
         $totalInterviews = ContactPerson::find($id);
-        $processing = ContactPerson::find($id);
-        if(!is_null($totalInterviews)){
-            $totalInterviews = count($totalInterviews->interviews()->where('status','<>','Transferred')->get());
-        }else{
-            $totalInterviews = 0;
-        }
-        if(!is_null($processing)){
-            $processing = count($processing->interviews()->where('status','Processing')->get());
-        }else{
-            $processing = 0;
-        }
-        return view('poc.index')->with([
+                            if(!is_null($totalInterviews)){
+                                $totalInterviews = $totalInterviews->interviews()
+                                                        ->where('status','<>','Transferred')
+                                                        ->whereRaw("created like '".date("Y-m-d")." %'")
+                                                        ->get()
+                                                        ->count();
+                            }else{
+                                $totalInterviews = 0;
+                            }
+                    
+                            if(!is_null($processing)){
+                                $processing = count($processing->interviews()->where('status','Processing')->get());
+                            }else{
+                                $processing = 0;
+                            }
+                    
+                            $doneInterviews = ContactPerson::find($id);
+                            if(!is_null($doneInterviews)){
+                                $done = count($doneInterviews->interviews()->where('status','Done')->get());
+                            }else{
+                                $done = 0;
+                            }
+                    return view('poc.index')->with([
             "url"=>$url,
             "todaysShowups"=>$todaysShowups,
-            "pending"=>$pendingShowups,
-            "processing"=>$processingShowups,
+            "training"=>$training,
+            "endorsed"=>$endorsed,
             "totalInterviews"=>$totalInterviews,
             "processingInterviews"=>$processing,
+            "doneInterviews"=>$done,
         ]);
     }
 ##############################################################################################
@@ -123,7 +161,7 @@ class POCsController extends Controller
         $showup = Applicant::find($id);
         $interview = Interview::where('applicant_no',$id)->first();
         $sites = SiteEndorsed::all();
-        return view('poc.details')->with([
+        return view('poc.edit')->with([
             'showup'=>$showup,
             'interview'=>$interview,
             'schools'=>$this->schools,
@@ -187,7 +225,6 @@ class POCsController extends Controller
         $applicant->gender = $request->input('gender');
         $applicant->marital_status = $request->input('marital_status');
         $applicant->position_applying = $request->input('position_applying');
-        $applicant->work_status = $request->input('work_status');
         $applicant->educational_attainment = $request->input('educational_attainment');
         $applicant->course = $request->input('course');
         $applicant->year_graduated = $request->input('year_graduated');
@@ -196,15 +233,109 @@ class POCsController extends Controller
         $applicant->activity = $request->input("activity");
         $applicant->contact_experience = $request->input("contact_experience");
         $applicant->endorsement_status = $request->input("endorsement_status");
-        $applicant->site_endorsed = $request->input("site_endorsed");
-        $applicant->business_partner = $request->input("business_partner");
+        
         $applicant->comment = $request->input("comment");
         $applicant->remarks = $request->input("remarks");
         $applicant->interviewStatus = $request->input("status");
         $applicant->endorsement_status = $request->input("endorsement_status");
         $applicant->endorse = $request->input("endorse");
-        // $interview->status = "Done";
-        // $interview->save();
+
+        if($request->input('endorse') == 'Endorse to Training' && $applicant->work_status != $request->input('work_status')){
+            $applicant->work_status = "TRAINING";
+            $applicant->endorsement_status = "";
+            $endorsement = new Endorsement();
+                    $endorsement->contact_id = $applicant->contact_id;
+                    $endorsement->status = "TRAINING";
+                    $endorsement->applicant_id = $id;
+                    $endorsement->save();
+        }
+
+        if($request->input('endorse') == 'Endorse to Local' && $applicant->work_status != $request->input('work_status') ){
+            $applicant->work_status = "INTERNAL";
+            $applicant->endorsement_status = "";
+            $endorsement = new Endorsement();
+                    $endorsement->contact_id = $applicant->contact_id;
+                    $endorsement->status = "INTERNAL";
+                    $endorsement->applicant_id = $id;
+                    $endorsement->save();
+        }
+        
+        //Select the endorsement if it exists
+        $endorsement = $applicant->endorsements->first();
+
+        if($request->input('endorsement_status') !== null && $request->input('endorsement_status') == "SINGLE"){
+            $endorsement->company_id = $request->input('business_partner');
+            $endorsement->site_id = $request->input('site_endorsed');
+            $applicant->business_partner = $request->input('business_partner');
+            $applicant->site_endorsed = $request->input('site_endorsed');
+            $applicant->endorsement_status = "SINGLE";
+            $endorsement->save();
+        }elseif($request->input('endorsement_status') !== null && $request->input('endorsement_status') == "MULTIPLE")
+            {
+            $applicant->endorsement_status = "MULTIPLE";
+            //Variable where to store the endorsement ID if it exists
+            $endorsement_id = null;
+    
+            //Endorsement Values
+            $endorsement_1 = ['company_id'=>$request->input('endorsement_1'),
+                                'site_id'=>$request->input('endorsement_site_1')
+                ];
+    
+            $endorsement_2 = ['company_id'=>$request->input('endorsement_2'),
+                            'site_id'=>$request->input('endorsement_site_2')
+            ];
+    
+            $endorsement_3 = ['company_id'=>$request->input('endorsement_3'),
+                            'site_id'=>$request->input('endorsement_site_3')
+            ];
+    
+            //Update endorsement if single endorsement
+            if($request->input('endorsement_1') && $request->input('endorsement_site_1')){
+                if($endorsement->company_id != 0 && $endorsement->site_id != 0){
+                    $endorsement = new Endorsement();
+                    $endorsement->applicant_id = $id;
+                }
+                $endorsement->company_id = $endorsement_1['company_id'];
+                $endorsement->site_id = $endorsement_1['site_id'];
+                $endorsement->contact_id = $applicant->contact_id;
+                $applicant->business_partner = $endorsement_1['company_id'];
+                $applicant->site_endorsed = $endorsement_1['site_id'];
+                $applicant->endorsement_status = "MULTIPLE";
+                $endorsement->save();
+            }
+    
+            //If multiple endorsements, create new endorsement and get the ID
+            if($request->input('endorsement_2')  && $request->input('endorsement_site_2')){
+                    $endorsement = new Endorsement();
+                    $endorsement->company_id = $endorsement_2['company_id'];
+                    $endorsement->site_id = $endorsement_2['site_id'];
+                    $endorsement->contact_id = $applicant->contact_id;
+                    $endorsement->status = "JOB";
+                    $endorsement->applicant_id = $id;
+                    $applicant->endorsement_status = "MULTIPLE";
+                    $endorsement->save();
+    
+                $applicant->business_partner = $endorsement_2['company_id'];
+                $applicant->site_endorsed = $endorsement_2['site_id'];
+    
+            }
+    
+            if($request->input('endorsement_3')  && $request->input('endorsement_site_3')){
+                    $endorsement = new Endorsement();
+                    $endorsement->company_id = $endorsement_3['company_id'];
+                    $endorsement->site_id = $endorsement_3['site_id'];
+                    $endorsement->status = "JOB";
+                    $endorsement->applicant_id = $id;
+                    $endorsement->contact_id = $applicant->contact_id;
+                    $applicant->endorsement_status = "MULTIPLE";
+                    $endorsement->save();
+                $applicant->business_partner = $endorsement_3['company_id'];
+                $applicant->site_endorsed = $endorsement_3['site_id'];
+            }
+        }
+
+        $interview->status = "Done";
+        $interview->save();
         $applicant->save();
 
         // return "Success";

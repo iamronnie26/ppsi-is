@@ -114,10 +114,6 @@ footer{
 			</div>
 			<div class="row">
 				<div class="col s12">
-					<ul class="tabs">
-						<li class="tab col s3"><a href="#recept">Recept</a></li>
-						<li class="tab col s3"><a href="#poc">POC</a></li>
-					</ul>
 					<script type="text/javascript">
 						$(function(){
 							$('.tabs').tabs();
@@ -172,6 +168,19 @@ footer{
 										<th>Educational Attainment</th>
 										<th>Last School Year</th>
 										<th>Work Status</th>
+										<th>Address</th>
+										<th>Activity</th>
+										<th>Business Partner</th>
+										<th>Site Endorse</th>
+										<th>Birthdate</th>
+										<th>Email Address</th>
+										<th>Nationality</th>
+										<th>Gender</th>
+										<th>Marital Status</th>
+										<th>Course</th>
+										<th>School</th>
+										<th>Year Graduated</th>
+										<th>Pre - Remarks (POC)</th>
 									</tr>
 								</thead>
 									<tbody>
@@ -183,82 +192,6 @@ footer{
 									</div>
 								</div>
 									</div>
-									<div id="poc" class="col s12">
-				<div class="col s12">
-					<div id="recept" class="col s12">
-						<div class="row">
-				<div class="col s12">
-						<div class="input-field inline col s10">
-							<input type="search" id="pocSearch" name="searchQuery">
-							<label for="searchField">Search</label>
-						</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col s12">
-					<div class="right">
-
-					@if($url === route("poc.data"))
-					<a href="#"><button class="btn disabled" disabled>View All</button></a>
-					<a href="{{url('/poc/showups/today')}}"><button class="btn">View Today</button></a>
-					@else
-					<a href="poc/showups/all"><button class="btn">View All</button></a>
-					<a href=""><button class="btn disabled" disabled>View Today</button></a>
-					@endif
-				</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col s12">
-										<div class="table-container" style="min-height:300px!important;margin-bottom:50px!important;" id="dailyreport">
-										<p id="header">Applicants</p>
-
-
-											<table style="display: none;" id="pocTable" class="highlight centered">
-											<footer style="position:absolute;bottom:10px;">Pierre and Paul Solutions, Inc. - {{date('Y')}}</footer>
-												<thead>
-													<tr>
-														<th colspan="3" style="padding:0!important;margin:0!important;"></th>
-														<th colspan="3" style="padding:0!important;margin:0!important;">Applicant Name</th>
-														<th colspan="13" style="padding:0!important;margin:0!important;">Applicant Details</th>
-														
-													</tr>
-													<tr>
-														<th>Action</th>
-														<th>ID</th>
-														<th>Series Number</th>
-														<th>First Name</th>
-														<th>Middle Name</th>
-														<th>Last Name</th>
-														
-														<th>Address</th>
-
-														<th>Activity</th>
-														<th>Business Partner</th>
-														<th>Site Endorse</th>
-														<th>Birthdate</th>
-														<th>Email Address</th>
-														<th>Nationality</th>
-														<th>Gender</th>
-														<th>Marital Status</th>
-														<th>Course</th>
-														<th>School</th>
-														<th>Year Graduated</th>
-														<th>Pre - Remarks (POC)</th>
-														</tr>
-														</thead>
-														<tbody>
-														</tbody>
-													</table>
-													<footer style="position:absolute;bottom:10px;">Pierre and Paul Solutions, Inc. - {{date('Y')}}</footer>
-												</div>
-											</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
 						<script type="text/javascript">
 							window.onload = function(){
 				$('#receptTable').show();
@@ -305,6 +238,19 @@ footer{
 					{data:"educational_attainment",name:"educational_attainment"},
 					{data:"last_year_attended",name:"last_year_attended"},
 					{data:"work_status",name:"work_status"},
+					{data:"address",name:"address"},
+					{data:"activity",name:"interview.activity"},
+					{defaultContent:"",data:"business_partner.company_name",name:"business_partner.company_name"},
+					{defaultContent:"",data:"site_endorsed.site_name",name:"site_endorsed.site_name"},
+					{defaultContent:"",data:"birthday",name:"birthday"},
+					{data:"email",name:"email"},
+					{data:"nationality",name:"nationality"},
+					{data:"gender",name:"gender"},
+					{data:"marital_status",name:"marital_status"},
+					{data:"course",name:"course"},
+					{defaultContent:"",data:"school.school_name",name:"school.school_name"},
+					{data:"year_graduated",name:"year_graduated"},
+					{data:"remarks",name:"interview.remarks"}
 				
 					]
 				});

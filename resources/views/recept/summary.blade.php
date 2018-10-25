@@ -46,7 +46,6 @@ tr td{
 	top:15%;
 	left:72%;
 	width:28%;
-
 }
 
 .card{
@@ -166,10 +165,26 @@ footer{
 								<th>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">*</font> Single Endorsement:</th>
 								<td>{{$todaysSingleEndorse}}</tD>
 							</tr>
+							@if($todaysSingleEndorse > 0)
+								@foreach($businessPartnerSingle as $company_name => $total)
+									<tr>
+										<th class="center-align">{{$company_name}}</th>
+										<td>{{$total}}</td>
+									</td>
+								@endforeach
+							@endif
 							<tr>
 								<th>&nbsp;&nbsp;&nbsp;&nbsp;<font color="red">*</font> Multiple Endorsement:</th>
 								<td>{{$totalMultipleEndorse}}</tD>
 							</tr>
+							@if($totalMultipleEndorse > 0)
+								@foreach($businessPartnerMultiple as $company_name => $total)
+									<tr>
+										<th class="center-align">{{$company_name}}</th>
+										<td>{{$total}}</td>
+									</td>
+								@endforeach
+							@endif
 							<tr>
 								<th><span class = "blue-text ">Active File</span></th>
 								<td><b>{{$todaysActiveFile}}</b></td>

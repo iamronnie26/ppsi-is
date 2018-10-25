@@ -15,4 +15,8 @@ class School extends Model
     public function applicants_in_school(){
     	return $this->hasMany('App\Applicant','school_id','id');
     }
+
+    public function interns(){
+        return $this->hasMany('App\Intern','school_id','id');
+    }
 }

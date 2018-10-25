@@ -80,7 +80,7 @@ class ReceptionistController extends Controller
 		$reEndorse = collect([]);
 		$singlEndorse = collect([]);
 		$multipleEndorse = collect([]);
-
+		$applicantsMultipleEndorse = collect([]);
 
 		$internShowups = collect([]);
 
@@ -91,6 +91,9 @@ class ReceptionistController extends Controller
 		$totalReEndorse = 0;
 		$totalSingleEndorse = 0;
 		$totalMultipleEndorse = 0;
+		$singleCompanyEndorsements = [];
+		$multipleCompanyEndorsements = [];
+		$showupMultipleEndorse = null;
 
 		//Loop for applicants contact IDs
 		foreach($applicants as $applicant) $applicantsContact_ids->push($applicant->contact_id);
@@ -128,6 +131,7 @@ class ReceptionistController extends Controller
 
 		//Loop for collecting applicants report
 		foreach($applicantsContact_ids as $contact_id){
+			$applicantEndorsements = [];
 			$contact = ContactPerson::find($contact_id);
 			$todays = Receptionist::where("contact_id",$contact_id)
 									->whereRaw("created like '".date("Y-m-d")." %'")
@@ -164,17 +168,50 @@ class ReceptionistController extends Controller
 			
 			$todaySingleEndorse = Receptionist::where("contact_id", $contact_id)
 									->whereRaw("created like '".date('Y-m-d')." %'")
-									->where(['endorsement_status' => 'Single Endorsement'])
+									->where(['endorsement_status' => 'SINGLE'])
 									->where('deleted_at',null)
 									->get()
 									->count();
-			
+									
+									
 			$todayMultipleEndorse = Receptionist::where("contact_id", $contact_id)
+			->whereRaw("created like '".date('Y-m-d')." %'")
+			->where(['endorsement_status' => 'MULTIPLE'])
+			->where('deleted_at',null)
+			->get()
+			->count();
+
+			$showupSingleEndorse = Receptionist::where("contact_id", $contact_id)
 									->whereRaw("created like '".date('Y-m-d')." %'")
-									->where(['endorsement_status' => 'Multiple Endorsement'])
+									->where(['endorsement_status' => 'SINGLE'])
 									->where('deleted_at',null)
-									->get()
-									->count();
+									->get();
+			
+				foreach($showupSingleEndorse as $applicant){
+					array_push($singleCompanyEndorsements,$applicant->endorsements[0]->businesspartner->company_name);
+				}
+			
+			
+			$showupMultipleEndorse = Receptionist::where("contact_id", $contact_id)
+									->whereRaw("created like '".date('Y-m-d')." %'")
+									->where(['endorsement_status' => 'MULTIPLE'])
+									->where('deleted_at',null)
+									->with('endorsements.businesspartner')
+									->get();
+									$applicantBusinessPartners = "";
+									
+									foreach($showupMultipleEndorse as $applicant){
+										$endorsements = $applicant->endorsements;
+										$c = [];
+										foreach($endorsements as $endorsement){
+											array_push($c,$endorsement->businesspartner->company_name);
+											sort($c);
+										}
+										$applicantBusinessPartners = implode(',',$c);
+										array_push($multipleCompanyEndorsements,$applicantBusinessPartners);
+				}
+				
+			
 
 			$todaysIntern  = Intern::where("contact_id", $contact_id)
 									->whereRaw("created like '".date('Y-m-d')." %'")
@@ -186,9 +223,9 @@ class ReceptionistController extends Controller
 			$totalInternal+=$todaysInternal;
 			$totalActiveFile+=$todaysactiveFile;
 			$totalReEndorse+=$todaysReEndorse;
-			$totalSingleEndorse += $todaySingleEndorse;
-			$totalMultipleEndorse += $todayMultipleEndorse;
 			$totalShowups+=$todays;
+			$totalSingleEndorse +=$todaySingleEndorse;
+			$totalMultipleEndorse +=$todayMultipleEndorse;
 			//$totalInterns+=$todaysIntern;
 
 			$contact_name = $contact->firstname." ".$contact->lastname;
@@ -200,9 +237,12 @@ class ReceptionistController extends Controller
 									 'reEndorses'=>$todaysReEndorse,
 									 'singleEndorses' => $todaySingleEndorse,
 									 'interns' => $todaysIntern]);
+			
+			 $applicantsMultipleEndorse->push($showupMultipleEndorse);
+			 $applicantEndorsements = [];
 		}
 
-
+		
 		//Loop for collecting interns report
 		foreach($internsContact_ids as $contact_id){
 			$contact = ContactPerson::find($contact_id);
@@ -224,16 +264,17 @@ class ReceptionistController extends Controller
 		$todaysActiveFile = $totalActiveFile;
 		$todaysSingleEndorse = $totalSingleEndorse;
 		$todaysMultipleEndorse = $totalMultipleEndorse;
+		$singleCompanyEndorsements = array_count_values($singleCompanyEndorsements);
+		$multipleCompanyEndorsements = array_count_values($multipleCompanyEndorsements);
 
 		$totalInterns = Intern::where(['deleted_at'=> null])
 		->whereRaw("created like '".date('Y-m-d')." %'")
 		->count();
 
 		$grandTotal = $todaysTotalShowups + $todaysTraining + $todaysInternal + $todaysReEndorse + $todaysActiveFile + $totalInterns;
-
-			// return $report;
-
+			//return dd($applicantsMultipleEndorse);
 		return view('recept.summary')->with([
+			"showupMultipleEndorse"=>$applicantsMultipleEndorse,
 			"applicants"=>$applicantShowups,
 			"trainings"=>$trainingShowups,
 			"interns"=>$internShowups,
@@ -242,8 +283,10 @@ class ReceptionistController extends Controller
 			"todaysInternal"=>$todaysInternal,
 			"todaysActiveFile"=>$todaysActiveFile,
 			"todaysReEndorse"=>$todaysReEndorse,
-			"todaysSingleEndorse"=>$todaysSingleEndorse,
-			"totalMultipleEndorse"=>$totalMultipleEndorse,
+			"todaysSingleEndorse"=>$totalSingleEndorse,
+			"totalMultipleEndorse"=>$todaysMultipleEndorse,
+			"businessPartnerSingle"=>$singleCompanyEndorsements,
+			"businessPartnerMultiple"=>$multipleCompanyEndorsements,
 			"totalInterns"=>$totalInterns,
 			"partialMonthlyTotal"=>$partialTotalMonthly,
 			"grandTotal"=>$grandTotal
@@ -372,7 +415,7 @@ class ReceptionistController extends Controller
 			$monthlyTotal+=$monthly;
 		}
 
-		$businesspartners = BusinessPartner::all();
+		$businesspartners = BusinessPartner::orderBy('company_name','asc')->get();
 		$business_report = collect();
 		
 		foreach($businesspartners as $businesspartner){

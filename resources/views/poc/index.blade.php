@@ -169,7 +169,7 @@ footer{
 												ajax:"{{$url}}",
 												"dom":"tp",
 												columns: [
-												{defaultContent:"<button class='btn'>View</button>" + " " + '<button class = "btn btn-history" type="button">History</button>'},
+												{defaultContent:"<button class='btn'>View</button>"},
 												{data:"id",name:"id"},
 												{data:"series_no",name:"series_no"},
 												{data:"middlename",
@@ -214,9 +214,9 @@ footer{
 					<div class="card-content" style="background-color:#735AF2">
 						<span class="card-title"><font color="white">Showups</font></span>
 						<ul>
-							<li><font color="white">Today's Showups: <span class="new badge"><b>{{$todaysShowups}}</b></span></font></li>
-							<li><font color="white">Pending: <span class="new badge"><b>{{$pending}}</b></span></font></li>
-							<li><font color="white">On Interview: <span class="new badge"><b>{{$processing}}</b></span></font></li>
+							<li><font color="white">Today's: <span class="new badge"><b>{{$todaysShowups}}</b></span></font></li>
+							<li><font color="white">Training: <span class="new badge"><b>{{$training}}</b></span></font></li>
+							<li><font color="white">Endorsed: <span class="new badge"><b>{{$endorsed}}</b></span></font></li>
 						</ul>
 					</div>
 				</div>	
@@ -228,9 +228,9 @@ footer{
 					<div class="card-content">
 						<span class="card-title"><font color="white">Interviews</font></span>
 						<ul>
-							<li><font color="white">Today's Interviews: <span class="new badge">{{$totalInterviews}}</span></font></li>
+							<li><font color="white">Today's: <span class="new badge">{{$totalInterviews}}</span></font></li>
 							<li><font color="white">On Progress: <span class="new badge">{{$processingInterviews}}</span></font></li>
-							<li><font color="white">Passed Interviews: <span class="new badge"></span></font></li>
+							<li><font color="white">Done: <span class="new badge">{{$doneInterviews}}</span></font></li>
 						</ul>
 					</div>
 				</div>

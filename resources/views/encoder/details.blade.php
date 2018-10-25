@@ -185,7 +185,7 @@
 			</div>
 
 			<div class="input-field col s6">
-				<select class="custom-select" name="work_status" id="work_status" disabled>
+				<select class="custom-select" name="work_status" id="work_status">
 					<option disabled selected>Choose Work Status</option>
 					<option value="JOB">Job</option>
 					<option value="INTERNAL">Internal Hiring</option>

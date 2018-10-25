@@ -21,6 +21,10 @@ class BusinessPartners extends Model
     public function sites(){
     	return $this->hasMany('App\BusinessLocation','partner_id','id');
     }
+
+    public function endorsements(){
+        return $this->hasMany('App\Endorsement','company_id','id');
+    }
 }
 
 ?>
